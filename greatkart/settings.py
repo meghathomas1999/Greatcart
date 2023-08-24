@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
+    'debug_toolbar',
+    'orders'
     
     
 
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'greatkart.urls'
@@ -156,6 +159,12 @@ STATICFILES_DIRS = [
 # media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media'
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # Add more IP addresses if needed
+]
+
 
 from django.contrib.messages import constants as messages
 

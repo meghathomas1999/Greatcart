@@ -5,6 +5,7 @@ from django.urls import reverse
 
 # Create your models here.
 class Product(models.Model):
+    id = models.BigAutoField(primary_key=True)
     product_name =  models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length= 200, unique=True)
     product_describtion=models.TextField(max_length=500, blank=True)
@@ -21,6 +22,7 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 class VariationManager(models.Manager):
+    id = models.BigAutoField(primary_key=True)
     def colors(self):
         return super(VariationManager, self).filter(variation_category='color',is_active=True,)
     def sizes(self):

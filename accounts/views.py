@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate,login
 from django.contrib.auth. decorators import login_required
 from django.http import HttpResponse
 from django.contrib import auth
+from carts.models import Cart,CartItem
+from carts.views import Carts_id
+from urllib.parse import urlparse, parse_qs
 
 #verification email
 from django.contrib.sites.shortcuts import get_current_site
@@ -63,29 +66,70 @@ def register(request):
 
     }  
     return render(request,'accounts/register.html',context)
-def user_login(request):
+def login(request):
     if request.method=="POST":
         email = request.POST['email']
         password = request.POST['password']
-        print("email",email)
-        print("password",password)
-        user = authenticate(email=email,password=password)
+        user = auth.authenticate(email=email,password=password)
         if user is not None:
-            login(request,user)
+            try:
+               cart = Cart.objects.get(cart_id = Carts_id(request))
+               print("cart",cart)
+               is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+               if is_cart_item_exists:
+                   cart_item = CartItem.objects.filter(cart=cart)
+                   product_variation = []
+                   for item in cart_item:
+                       variation = item.variations.all()
+                       product_variation.append(list(variation))
+                       cart_item = CartItem.objects.filter(user=user)
+                       ex_var_list = []
+                       id = []
+                   for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                   for pr in product_variation :
+                    if pr in ex_var_list:
+                        index=ex_var_list.index(pr)
+                        item_id = id[index]
+                        item=CartItem.objects.get(id = item_id)
+                        item.quantity += 1
+                        item.user=user
+                        item.save()
+                    else:
+                        cart_item=CartItem.objects.filter(cart=cart)
+                        for item in cart_item:
+                            item.user = user
+                            item.save()
+                            print("user",user)
+
+            except:
+              pass
+            auth.login(request,user)
             messages.success(request,"You are now login ")
-            return redirect('dashboard')
+            url = request.META.get('HTTP_REFERER')
+            try:
+                print("enter in to try")
+                query = request.utils.urlparse(url).Query
+                print('query',query)
+                params = dict(x.split('=')  for x in query.split('&'))
+                print("params",params)
+                if 'next' in params:
+                    nextPage = params['next']
+                    print("nextPage:",nextPage)
+                    return redirect('nextPage')
+            except:
+                 return redirect('dashboard')
         else:
             messages.error(request," Invalid login credentials ")
             return redirect('login')
-
-
-
     return render(request,'accounts/login.html')
-
 @login_required(login_url='login')
 def logout(request):
     auth.logout(request)
-    messages.success(request,"You are Loggout")
+    messages.success(request,"You are Logout")
     return redirect('login')
 def activate(request,uidb64,token):
     try:

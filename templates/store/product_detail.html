@@ -18,6 +18,7 @@
             <main class="col-md-6 border-left">
               <form action="{% url 'add_Carts'  single_product.id %}" method = "POST">
               {% csrf_token %}
+              {{form.errors}}
     <article class="content-body">
     
     <h2 class="title">{{single_product.product_name}}</h2>
@@ -28,7 +29,7 @@
     
     <!-- <p>{{single_product.description}}</p> -->
     <!-- Debug Output -->
-    <p>{{ single_product.product_describtion  |default:"No description available." }}</p>
+    <p>{{ single_product.product_describtion  }}</p>
 
     
     

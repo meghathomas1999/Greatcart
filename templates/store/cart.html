@@ -33,9 +33,9 @@
                 <figcaption class="info">
                     <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
                     <p class="text-muted small">
-                        {% if cart_item.variations.all %}
-                        {% for variation in cart_item.variations.all %}
-                        {{ variation.variation_category}}:{{ variation.variation_value }}
+                        {% if cart_item.Variations.all %}
+                        {% for  item  in cart_item.Variations.all %}
+                        {{ item.variation_category}}:{{ item.variation_value }}
                         {% endfor %}
                         {% endif %}
                     </p>
@@ -99,7 +99,7 @@
                 <p class="text-center mb-3">
                     <img src="{% static './images/misc/payments.png' %}" height="26">
                 </p>
-                <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
+                <a href="{% url 'login' %}" class="btn btn-primary btn-block"> Checkout </a>
                 <a href="{%url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->

@@ -33,6 +33,7 @@ class MyAccountmanager( BaseUserManager):
         user.save(using=self._db)
         return user
 class Account(AbstractBaseUser):
+    id = models.BigAutoField(primary_key=True)
     first_name= models.CharField(max_length=50)
     last_name= models.CharField( max_length=50)
     username= models.CharField( max_length=100, unique= True)
